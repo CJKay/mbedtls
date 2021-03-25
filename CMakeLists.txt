@@ -267,7 +267,6 @@ endif(ENABLE_ZLIB_SUPPORT)
 add_subdirectory(include)
 
 add_subdirectory(3rdparty)
-list(APPEND libs ${thirdparty_lib})
 
 add_subdirectory(library)
 
@@ -345,4 +344,26 @@ if(ENABLE_TESTING)
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/DartConfiguration.tcl
                     ${CMAKE_CURRENT_BINARY_DIR}/DartConfiguration.tcl COPYONLY)
     endif()
+endif()
+
+include(CMakePackageConfigHelpers)
+
+write_basic_package_version_file(
+    "cmake/MbedTLSConfigVersion.cmake"
+    COMPATIBILITY AnyNewerVersion
+    VERSION 2.26.0)
+
+configure_package_config_file(
+    "cmake/MbedTLSConfig.cmake.in"
+    "cmake/MbedTLSConfig.cmake"
+    INSTALL_DESTINATION "cmake/MbedTLSConfig.cmake")
+
+install(
+    EXPORT MbedTLSTargets
+    DESTINATION "cmake"
+    FILE "MbedTLSTargets.cmake")
+
+if(CMAKE_VERSION GREATER_EQUAL 3.15)
+    # Make this package visible to the system
+    export(PACKAGE MbedTLS)
 endif()

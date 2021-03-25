@@ -1,0 +1,34 @@
+cmake_minimum_required(VERSION 2.8.12)
+
+#
+# Simulate configuring and building Mbed TLS as the user might do it. We'll
+# skip installing it, and use the build directory directly instead.
+#
+
+set(MbedTLS_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../..")
+set(MbedTLS_BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/mbedtls")
+
+execute_process(
+    COMMAND "${CMAKE_COMMAND}"
+        -S "${MbedTLS_SOURCE_DIR}"
+        -B "${MbedTLS_BINARY_DIR}")
+
+execute_process(
+    COMMAND "${CMAKE_COMMAND}"
+        --build "${MbedTLS_BINARY_DIR}")
+
+#
+# Locate the package.
+#
+
+set(MbedTLS_DIR "${MbedTLS_BINARY_DIR}/cmake")
+find_package(MbedTLS COMPONENTS Crypto TLS X509 REQUIRED)
+
+#
+# At this point, the Mbed TLS targets should have been imported, and we can now
+# link to them from our own program.
+#
+
+add_executable(cmake_package cmake_package.c)
+target_link_libraries(cmake_package
+    MbedTLS::Crypto MbedTLS::TLS MbedTLS::X509)

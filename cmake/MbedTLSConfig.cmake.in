@@ -1,0 +1,7 @@
+@PACKAGE_INIT@
+
+include("${CMAKE_CURRENT_LIST_DIR}/MbedTLSTargets.cmake")
+
+add_library(MbedTLS::Crypto ALIAS MbedTLS::mbedcrypto)
+add_library(MbedTLS::TLS ALIAS MbedTLS::mbedtls)
+add_library(MbedTLS::X509 ALIAS MbedTLS::mbedx509)
